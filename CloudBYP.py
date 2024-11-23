@@ -3,8 +3,8 @@ from requests.auth import HTTPBasicAuth
 from bs4 import BeautifulSoup
 import argparse
 import json
+import os
 
-# Logo for the tool
 BANNER = """
    
   _____ _                 _ ______     _______  
@@ -15,30 +15,35 @@ BANNER = """
  \_____|_|\___/ \__,_|\__,_|____/  |_|  |_|     
                                                 
                 CloudBYP - Cloudflare Bypass
-		Version: 1.0
+		Version: 1.1
 		Author: G4UR4V007
 A tool to find the origin IP of a Cloudflare-protected website using Censys.
-
 """
 
-def get_cloudflare_exposed_ips(domain, api_id, api_secret):
-    """
-    Get exposed IP addresses for a given Cloudflare-protected domain using Censys search API.
-    
-    Args:
-        domain (str): The domain to search for.
-        api_id (str): Censys API ID.
-        api_secret (str): Censys API secret.
+CONFIG_FILE = "config.json"
 
-    Returns:
-        list: A list of potentially exposed IP addresses in http://ip/ format.
+def load_config():
     """
+    Load API credentials from the config file.
+    Returns:
+        tuple: (api_id, api_secret) if found, otherwise (None, None).
+    """
+    if os.path.exists(CONFIG_FILE):
+        try:
+            with open(CONFIG_FILE, "r") as f:
+                config = json.load(f)
+                return config.get("api_id"), config.get("api_secret")
+        except Exception as e:
+            print(f"Error reading config file: {e}")
+    return None, None
+
+def get_cloudflare_exposed_ips(domain, api_id, api_secret):
     url = "https://search.censys.io/api/v2/hosts/search"
     headers = {
         "Accept": "application/json"
     }
     params = {
-        "q": f"{domain}",  # General query for the domain
+        "q": f"{domain}",
         "per_page": 100
     }
 
@@ -81,15 +86,6 @@ def get_cloudflare_exposed_ips(domain, api_id, api_secret):
     return ip_addresses
 
 def fetch_site_title(ip):
-    """
-    Fetch the site title from the IP address.
-
-    Args:
-        ip (str): The IP address to fetch the site title from.
-
-    Returns:
-        str: The site title, or 'No title found' if unable to retrieve.
-    """
     try:
         response = requests.get(f"http://{ip}")
         if response.status_code == 200:
@@ -107,12 +103,23 @@ def main():
     
     parser = argparse.ArgumentParser(description="Extract Cloudflare-exposed IP addresses and site titles for a domain.")
     parser.add_argument("domain", help="The domain to search for.")
-    parser.add_argument("--api-id", help="Censys API ID.", required=True)
-    parser.add_argument("--api-secret", help="Censys API secret.", required=True)
+    parser.add_argument("--api-id", help="Censys API ID.")
+    parser.add_argument("--api-secret", help="Censys API secret.")
     parser.add_argument("--output", help="Output file.", default=None)
     args = parser.parse_args()
 
-    ip_addresses = get_cloudflare_exposed_ips(args.domain, args.api_id, args.api_secret)
+    # Load API credentials from config file
+    config_api_id, config_api_secret = load_config()
+
+    # Use CLI arguments if provided, otherwise fallback to config file
+    api_id = args.api_id if args.api_id else config_api_id
+    api_secret = args.api_secret if args.api_secret else config_api_secret
+
+    if not api_id or not api_secret:
+        print("Error: API ID and API Secret are required. Please provide them via arguments or a config file.")
+        return
+
+    ip_addresses = get_cloudflare_exposed_ips(args.domain, api_id, api_secret)
 
     if ip_addresses:
         if args.output:
