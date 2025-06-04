@@ -1,59 +1,91 @@
-# CloudBYP
+<h1 align="center">☁️ CloudBYP - Cloudflare Bypass Tool ☁️</h1>
 
-**CloudBYP** is a tool designed to find the origin IP addresses of Cloudflare-protected websites using the Censys search API. It also retrieves the site title for each discovered IP address.
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.1-blue" />
+  <img src="https://img.shields.io/badge/author-G4UR4V007-green" />
+  <img src="https://img.shields.io/badge/status-active-brightgreen" />
+</p>
 
-## Features
+<p align="center">
+  <b>Find the real IP behind Cloudflare protection using Censys!</b>
+</p>
 
-- Fetch exposed IP addresses for a specified domain.
-- Retrieve and display the site title for each IP address.
-- Output results in a human-readable format.
-- Optionally save results to a file.
+---
 
-## Requirements
+## 🚀 Features
+
+- 🔍 Discover origin IP of Cloudflare-protected domains.
+- ⚙️ Integrates with <a href="https://censys.io">Censys API</a>.
+- 🧠 Intelligent parsing with BeautifulSoup.
+- 🧪 Easy-to-use CLI interface.
+
+---
+
+## 🛠️ Requirements
 
 - Python 3.x
-- Required Python packages:
+- Modules:
   - `requests`
   - `beautifulsoup4`
 
-You can install the necessary packages using pip:
+Install using:
+
+```bash
+pip install -r requirements.txt
+```
+
+Or manually:
 
 ```bash
 pip install requests beautifulsoup4
 ```
 
-## Usage
+---
 
-### Basic Usage
+## ⚙️ Configuration
 
-To run the tool, use the following command:
+Save your Censys API credentials in `config.json` like so:
 
-```bash
-python3 CloudBYP.py <domain> --api-id <your_censys_api_id> --api-secret <your_censys_api_secret>
+```json
+{
+  "api_id": "YOUR_CENSYS_API_ID",
+  "api_secret": "YOUR_CENSYS_API_SECRET"
+}
 ```
 
-Replace `<domain>`, `<your_censys_api_id>`, and `<your_censys_api_secret>` with your desired domain and your Censys API credentials.
+---
 
-### Options
-
-- `--api-id`: Your Censys API ID. (Required)
-- `--api-secret`: Your Censys API secret. (Required)
-- `--output`: Path to the output file. If specified, results will be saved to this file. Otherwise, results will be printed to the console.
-
-### Example
+## 📦 Usage
 
 ```bash
-python3 CloudBYP.py example.com --api-id YOUR_API_ID --api-secret YOUR_API_SECRET --output results.txt
+python3 CloudBYP.py --domain example.com
 ```
 
-This command will search for exposed IP addresses for `example.com` and save the results, including site titles, to `results.txt`.
+**Arguments:**
 
-## License
+- `--domain` : Target domain name (protected by Cloudflare).
 
-This tool is provided under the MIT License. See the [LICENSE](LICENSE) file for details.
+🔗 Example:
 
-## Disclaimer
+```bash
+python3 CloudBYP.py --domain targetsite.com
+```
 
-The use of this tool should comply with all applicable laws and terms of service of the APIs and websites being accessed.
+---
 
-For any issues or contributions, please open an issue or pull request on the GitHub repository.
+## 📄 License
+
+Licensed under the MIT License. See [LICENSE](LICENSE) for more info.
+
+---
+
+## 👤 Author
+
+- **Name:** G4UR4V007  
+- **GitHub:** [@0xgh057r3c0n](https://github.com/0xgh057r3c0n)
+
+---
+
+## ⚠️ Disclaimer
+
+> This tool is for **educational and authorized testing only**. Unauthorized use is strictly prohibited.
