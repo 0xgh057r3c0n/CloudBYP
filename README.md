@@ -31,13 +31,13 @@
 Install using:
 
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 Or manually:
 
 ```bash
-pip install requests beautifulsoup4
+pip3 install requests beautifulsoup4
 ```
 
 ---
